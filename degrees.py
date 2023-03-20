@@ -98,16 +98,18 @@ def shortest_path(source, target):
     num_explored = 0
 
     frontier = QueueFrontier()
-    start = Node(state=source_person, parent=None, action=None)
-    for movie in start.state["movies"]:
-        node = Node(state=source_person, parent=None, action=movie)
+    start = Node(state=source, parent=None, action=None)
+    for movie in people[start.state]["movies"]:
+        node = Node(state=source, parent=None, action=movie)
         frontier.add(node)
-    goal = target_person
+    goal = target
     explored = set()
 
-    while True:
-        if frontier.empty():
-            return None
+    while not frontier.empty():
+        #node_person_id = person_id_for_name(node.state["name"])
+        node_person = people[node.state]
+        # if frontier.empty():
+        #     return None
 
         node = frontier.remove()
         #print(type(node.state))
@@ -116,23 +118,33 @@ def shortest_path(source, target):
             solution = []
             #cells = []
             while node.parent is not None:
-                movie_person = (node.action, person_id_for_name(node.state["name"]))
+                movie_person = (node.action, node.state)
+                print(movie_person)
                 solution.append(movie_person)
                 node = node.parent
-                solution.reverse()
-                #print(solution)
-                return solution
+                #print(type(solution))
+            solution.reverse()
+            print(solution)
+            return solution
         
         explored.add(frozenset(node.state))
-        #print(node.state)
-        for movie in node.state["movies"]:
-            for star in movies[movie]["stars"]:
-                person = people[star]
-                #print(person)
-                child = Node(state=person, parent=node, action=movie)
-                #print(child.action)
-                frontier.add(child)
+        # for movie in node_person["movies"]:
+        #    for star in movies[movie]["stars"]:
+        #        person = people[star]
+        #        #print(person)
+        #        #print(person)
+        #        child = Node(state=star, parent=node, action=movie)
+        #        #print(child.action)
+        #        frontier.add(child)
 
+        neighbors = neighbors_for_person(node.state)
+        for neighbor in neighbors:
+           #print(neighbor)
+           action = neighbor[0]
+           person = neighbor[1]
+           child = Node(state=person, parent=node, action=action)
+           frontier.add(child)
+    return None
 
 def person_id_for_name(name):
     """
