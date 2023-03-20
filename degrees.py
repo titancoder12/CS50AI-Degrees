@@ -119,12 +119,12 @@ def shortest_path(source, target):
             #cells = []
             while node.parent is not None:
                 movie_person = (node.action, node.state)
-                print(movie_person)
+                #print(movie_person)
                 solution.append(movie_person)
                 node = node.parent
                 #print(type(solution))
             solution.reverse()
-            print(solution)
+            #print(solution)
             return solution
         
         explored.add(frozenset(node.state))
@@ -139,11 +139,27 @@ def shortest_path(source, target):
 
         neighbors = neighbors_for_person(node.state)
         for neighbor in neighbors:
-           #print(neighbor)
-           action = neighbor[0]
-           person = neighbor[1]
-           child = Node(state=person, parent=node, action=action)
-           frontier.add(child)
+            #print(neighbor)
+            action = neighbor[0]
+            person = neighbor[1]
+            child = Node(state=person, parent=node, action=action)
+            if child.state == goal:
+                num_explored += 1
+                solution = []
+                #cells = []
+                node = child
+                while node.parent is not None:
+                    movie_person = (node.action, node.state)
+                    #print(movie_person)
+                    solution.append(movie_person)
+                    node = node.parent
+                    #print("Neighbor:")
+                    #print(solution)
+                solution.reverse()
+                #print(solution)
+                return solution
+            frontier.add(child)
+                
     return None
 
 def person_id_for_name(name):
